@@ -1,5 +1,4 @@
 # EDTech for Kids
-# EDTech for Kids
 
 A full-stack learning platform for kids with:
 - Kid-friendly video-first lessons (watch video, then take quiz)
