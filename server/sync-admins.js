@@ -13,7 +13,7 @@ const DEFAULT_ADMINS = [
   {
     name: "Admin Pallawi",
     email: "pallawipratyay6@gmail.com",
-    password: "pallawi123@",
+    password: "admin123@",
   },
 ];
 

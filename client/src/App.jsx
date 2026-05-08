@@ -304,7 +304,7 @@ function Navbar({ session, pathname, onLogout }) {
   return (
     <header className="nav-shell">
       <nav className="topbar glass-panel section-shell">
-        <Link className="brand-mark" to="/">
+        <Link className="brand-mark" to={session ? dashboardPath : "/"}>
           <span className="brand-mark__badge">EK</span>
           <div>
             <p className="eyebrow">India-friendly learning flow</p>
@@ -313,9 +313,11 @@ function Navbar({ session, pathname, onLogout }) {
         </Link>
 
         <div className="topbar__links">
-          <NavLink to="/" className={navClassName}>
-            Home
-          </NavLink>
+          {!session ? (
+            <NavLink to="/" className={navClassName}>
+              Home
+            </NavLink>
+          ) : null}
 
           {!session ? (
             <>
@@ -368,6 +370,18 @@ function ProtectedRoute({ session, allowedRoles, children }) {
 }
 
 function HomePage({ session }) {
+  if (session) {
+    const dashboardPath =
+      session.role === "parent"
+        ? "/parent-dashboard"
+        : session.role === "student"
+          ? "/kid-dashboard"
+          : session.role === "admin"
+            ? "/admin-dashboard"
+            : "/";
+    return <Navigate to={dashboardPath} replace />;
+  }
+
   const [selectedLearner, setSelectedLearner] = useState(learners[0].id);
   const [selectedSubject, setSelectedSubject] = useState(subjects[0].id);
   const [selectedAnswers, setSelectedAnswers] = useState({});

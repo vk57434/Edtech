@@ -29,10 +29,10 @@ const DEFAULT_ADMINS = [
     password: "admin123@",
   },
   {
-    name: "Admin Pallawi",
-    email: "pallawipratyay6@gmail.com",
-    password: "pallawi123@",
-  },
+      name: "Admin Pallawi",
+      email: "pallawipratyay6@gmail.com",
+      password: "admin123@",
+    },
 ];
 
 // 🔥 CREATE OR SYNC DEFAULT ADMINS
