@@ -19,9 +19,9 @@ const generateImage = (keyword, topic) => {
 // ✅ Generate AI Quiz
 router.post("/generate", async (req, res) => {
   try {
-    const { topic, classLevel, videoUrl, lessonTitle, lessonDescription } = req.body;
+    const { topic, subject, classLevel, videoUrl, lessonTitle, lessonDescription } = req.body;
 
-    console.log(`🤖 AI Generation started for: ${topic} (Class ${classLevel})`);
+    console.log(`🤖 AI Generation started for: ${topic} (${subject}, Class ${classLevel})`);
 
     if (!topic || !classLevel) {
       return res.status(400).json({
@@ -34,20 +34,26 @@ router.post("/generate", async (req, res) => {
     //------------------------------------------------
 
     const prompt = `
-Create 10 MCQ quiz questions for Class ${classLevel} kids about "${topic}".
-${lessonTitle ? `The lesson is titled "${lessonTitle}".` : ""}
-${lessonDescription ? `Description: "${lessonDescription}".` : ""}
-${videoUrl ? `The quiz is based on this educational video: ${videoUrl}` : ""}
+Create 10 MCQ quiz questions for Class ${classLevel} kids about the topic "${topic}" in the subject "${subject}".
+
+${videoUrl ? `The quiz is based on this educational video: ${videoUrl}` : "Since no video URL was provided, please SUGGEST a high-quality educational YouTube video URL for kids that explains this topic perfectly. Use a real YouTube URL if possible, otherwise provide a placeholder from a channel like 'Peekaboo Kidz', 'Dr. Binocs Show', or 'National Geographic Kids'."}
+
+${lessonTitle ? `The lesson title is "${lessonTitle}".` : "Suggest a catchy lesson title for this topic."}
+${lessonDescription ? `The lesson description is "${lessonDescription}".` : "Suggest a short, engaging lesson description (2-3 sentences) that tells kids what they will learn."}
 
 RULES:
 - Return ONLY valid JSON
 - No explanation
 - No extra text
 - For each option, provide a short 'visualKeyword' (1-2 words) that describes it for an image generator.
+- The videoUrl MUST be a valid YouTube URL.
 
 FORMAT:
 
 {
+ "videoUrl": "suggested or provided youtube url",
+ "lessonTitle": "suggested or provided title",
+ "lessonDescription": "suggested or provided description",
  "questions":[
   {
    "text":"Question here",
@@ -125,9 +131,10 @@ FORMAT:
     const quiz = await Quiz.create({
       class: classLevel,
       topic,
-      lessonTitle,
-      lessonDescription,
-      videoUrl,
+      subject: subject || "General",
+      lessonTitle: quizData.lessonTitle || lessonTitle || topic,
+      lessonDescription: quizData.lessonDescription || lessonDescription || `Learn about ${topic}`,
+      videoUrl: quizData.videoUrl || videoUrl,
       questions: questionsWithImages,
     });
 

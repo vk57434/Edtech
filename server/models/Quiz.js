@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const quizSchema = new mongoose.Schema({
   title: String,
   topic: String,
+  subject: String,
   class: Number,
   lessonTitle: String,
   lessonDescription: String,

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function AdminGenerateQuiz() {
   const [topic, setTopic] = useState("");
+  const [subject, setSubject] = useState("Math");
   const [classLevel, setClassLevel] = useState(1);
   const [videoUrl, setVideoUrl] = useState("");
   const [lessonTitle, setLessonTitle] = useState("");
@@ -22,6 +23,7 @@ export default function AdminGenerateQuiz() {
 
       await axios.post("http://localhost:5000/api/ai/generate", {
         topic,
+        subject,
         classLevel: Number(classLevel),
         videoUrl,
         lessonTitle,
@@ -52,6 +54,21 @@ export default function AdminGenerateQuiz() {
         </div>
 
         <div className="space-y-5">
+          <div>
+            <label className="block text-sm font-bold text-slate-700 mb-2">Subject (Required)</label>
+            <select
+              className="w-full rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-800 outline-none ring-1 ring-slate-200 focus:ring-2 focus:ring-indigo-300 transition"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+            >
+              <option value="Math">Math</option>
+              <option value="Science">Science</option>
+              <option value="English">English</option>
+              <option value="General Knowledge">General Knowledge</option>
+              <option value="History">History</option>
+            </select>
+          </div>
+
           <div>
             <label className="block text-sm font-bold text-slate-700 mb-2">Topic (Required)</label>
             <input
@@ -84,7 +101,8 @@ export default function AdminGenerateQuiz() {
           </div>
 
           <div className="pt-2 border-t border-slate-100">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">Video & Lesson Details (Optional)</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Video & Lesson Details (Optional)</h3>
+            <p className="text-[10px] text-indigo-500 font-bold uppercase tracking-tight mb-4">✨ AI will automatically suggest a video if left blank</p>
             
             <div className="space-y-4">
               <div>
