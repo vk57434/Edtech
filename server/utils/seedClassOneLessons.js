@@ -1,11 +1,5 @@
 const Quiz = require("../models/Quiz");
 
-const generateImage = (text) => {
-  return `https://image.pollinations.ai/prompt/${encodeURIComponent(
-    `${text} cute colorful cartoon icon for kids`
-  )}`;
-};
-
 const CLASS_ONE_LESSONS = [
   {
     title: "Math Counting Fun",
@@ -823,17 +817,11 @@ const seedClassOneLessons = async () => {
         baseQuestions = CLASS_TWO_ENGLISH_QUESTIONS;
       }
 
-      const lessonWithImages = {
+      const lessonToSave = {
         ...lesson,
         class: classLevel,
         videoUrl: topicVideo,
-        questions: baseQuestions.map((question) => ({
-          ...question,
-          options: question.options.map((option) => ({
-            ...option,
-            image: generateImage(option.text),
-          })),
-        })),
+        questions: baseQuestions,
       };
 
       await Quiz.updateOne(
@@ -841,13 +829,13 @@ const seedClassOneLessons = async () => {
           class: classLevel,
           topic: lesson.topic,
         },
-        { $set: lessonWithImages },
+        { $set: lessonToSave },
         { upsert: true }
       );
     }
   }
 
-  console.log("🎬 Lesson quizzes synced for classes 1–5");
+  console.log("🎬 Lesson quizzes synced for classes 1–5 (Text options only)");
 };
 
 module.exports = seedClassOneLessons;

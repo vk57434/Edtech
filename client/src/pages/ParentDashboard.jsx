@@ -178,25 +178,6 @@ export default function ParentDashboard({ session, onSessionUpdate }) {
     }
   };
 
-  //------------------------------------------------
-
-  const startQuiz = () => {
-    if (!selectedStudent) {
-      alert("Select a student");
-      return;
-    }
-
-    const student = students.find((s) => s._id === selectedStudent);
-
-    navigate("/quiz", {
-      state: {
-        student,
-        returnTo: "/parent-dashboard",
-      },
-    });
-  };
-
-  //------------------------------------------------
 
   return (
     <div className="min-h-screen p-10">
@@ -226,13 +207,7 @@ export default function ParentDashboard({ session, onSessionUpdate }) {
           ))}
         </select>
 
-        <button
-          onClick={startQuiz}
-          className="w-full bg-blue-600 text-white py-2 rounded-lg 
-                     hover:bg-blue-700 transition"
-        >
-          ▶ Start Quiz
-        </button>
+
       </div>
 
       <div className="grid md:grid-cols-2 gap-6 mt-6">

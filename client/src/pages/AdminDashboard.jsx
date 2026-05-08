@@ -37,17 +37,24 @@ export default function AdminDashboard() {
               Admin Control Center
             </p>
             <h1 className="mt-1 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-              Dashboard
+              Student Focus Center
             </h1>
             <p className="mt-2 max-w-2xl text-sm text-slate-600 sm:text-base">
-              Monitor parent accounts and student performance at a glance.
+              Identify kids who are weak in specific subjects and need extra attention.
             </p>
           </div>
 
           <div className="flex gap-3">
             <button
               type="button"
-              onClick={() => navigate("/admin-dashboard")}
+              onClick={() => navigate("/admin-ai")}
+              className="rounded-full bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-100 transition hover:bg-indigo-700 active:scale-95"
+            >
+              🤖 Generate Quiz
+            </button>
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
               className="rounded-full bg-white px-5 py-2 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-slate-200 transition hover:bg-slate-50"
             >
               Refresh
@@ -55,7 +62,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
             <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
               Total Parents
@@ -72,6 +79,14 @@ export default function AdminDashboard() {
               {totalStudents}
             </p>
           </div>
+          <div className="rounded-3xl bg-rose-50 p-5 shadow-sm ring-1 ring-rose-100">
+            <p className="text-xs font-bold uppercase tracking-wide text-rose-600">
+              Attention Required
+            </p>
+            <p className="mt-2 text-3xl font-extrabold text-rose-700">
+              {parents.reduce((acc, p) => acc + (p.children?.filter(c => c.needsHelp).length || 0), 0) || "Check Below"}
+            </p>
+          </div>
           <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
             <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
               Search
@@ -80,7 +95,7 @@ export default function AdminDashboard() {
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search by parent name or email"
+                placeholder="Name or Email"
                 className="w-full rounded-2xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-800 outline-none ring-1 ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-300"
               />
             </div>

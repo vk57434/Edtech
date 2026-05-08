@@ -10,16 +10,18 @@ const openai = new OpenAI({
 });
 
 // ✅ FREE IMAGE GENERATOR
-const generateImage = (text) => {
+const generateImage = (keyword, topic) => {
   return `https://image.pollinations.ai/prompt/${encodeURIComponent(
-    text + " disney pixar style cartoon for kids colorful 3d"
-  )}`;
+    keyword + " for kids " + topic + " educational 3d cartoon style high quality"
+  )}?width=400&height=400&nologo=true`;
 };
 
 // ✅ Generate AI Quiz
 router.post("/generate", async (req, res) => {
   try {
-    const { topic, classLevel } = req.body;
+    const { topic, classLevel, videoUrl, lessonTitle, lessonDescription } = req.body;
+
+    console.log(`🤖 AI Generation started for: ${topic} (Class ${classLevel})`);
 
     if (!topic || !classLevel) {
       return res.status(400).json({
@@ -31,6 +33,36 @@ router.post("/generate", async (req, res) => {
     // ⭐ CALL AI (STABLE MODEL)
     //------------------------------------------------
 
+    const prompt = `
+Create 10 MCQ quiz questions for Class ${classLevel} kids about "${topic}".
+${lessonTitle ? `The lesson is titled "${lessonTitle}".` : ""}
+${lessonDescription ? `Description: "${lessonDescription}".` : ""}
+${videoUrl ? `The quiz is based on this educational video: ${videoUrl}` : ""}
+
+RULES:
+- Return ONLY valid JSON
+- No explanation
+- No extra text
+- For each option, provide a short 'visualKeyword' (1-2 words) that describes it for an image generator.
+
+FORMAT:
+
+{
+ "questions":[
+  {
+   "text":"Question here",
+   "options":[
+     {"text": "Option 1", "visualKeyword": "keyword1"},
+     {"text": "Option 2", "visualKeyword": "keyword2"},
+     {"text": "Option 3", "visualKeyword": "keyword3"},
+     {"text": "Option 4", "visualKeyword": "keyword4"}
+   ],
+   "correctIndex":0
+  }
+ ]
+}
+`;
+
     const completion = await openai.chat.completions.create({
       model: "openai/gpt-4o-mini", // ⭐ VERY IMPORTANT (Change model)
 
@@ -40,27 +72,7 @@ router.post("/generate", async (req, res) => {
       messages: [
         {
           role: "user",
-          content: `
-Create 5 VERY EASY MCQ quiz questions for Class ${classLevel} kids about "${topic}".
-
-RULES:
-- Return ONLY valid JSON
-- No explanation
-- No extra text
-- Questions must be simple and visual for kids
-
-FORMAT:
-
-{
- "questions":[
-  {
-   "text":"Question here",
-   "options":["Cat","Dog","Lion","Tiger"],
-   "correctIndex":0
-  }
- ]
-}
-`,
+          content: prompt,
         },
       ],
     });
@@ -70,6 +82,7 @@ FORMAT:
     //------------------------------------------------
 
     let aiText = completion.choices[0].message.content.trim();
+    console.log("📥 AI Response received");
 
     let quizData;
 
@@ -100,8 +113,8 @@ FORMAT:
       correctIndex: q.correctIndex,
 
       options: q.options.map((opt) => ({
-        text: opt,
-        image: generateImage(opt),
+        text: opt.text,
+        image: generateImage(opt.visualKeyword || opt.text, topic),
       })),
     }));
 
@@ -112,8 +125,13 @@ FORMAT:
     const quiz = await Quiz.create({
       class: classLevel,
       topic,
+      lessonTitle,
+      lessonDescription,
+      videoUrl,
       questions: questionsWithImages,
     });
+
+    console.log(`✅ AI Quiz saved successfully: ${quiz._id}`);
 
     res.json({
       message: "✅ AI Quiz generated successfully!",

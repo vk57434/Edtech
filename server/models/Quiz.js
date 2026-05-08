@@ -15,7 +15,7 @@ const quizSchema = new mongoose.Schema({
       options: [
         {
           text: String,
-          imageUrl: String, // ⭐ NEW FIELD
+          image: String, // ⭐ NEW FIELD
         },
       ],
 

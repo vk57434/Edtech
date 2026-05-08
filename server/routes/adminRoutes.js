@@ -1,33 +1,39 @@
 const express = require("express");
 const User = require("../models/User");
+const Result = require("../models/Result");
 const router = express.Router();
 
 router.get("/users", async (req, res) => {
   try {
-    // Get all parents
     const parents = await User.find({ role: "parent" })
-      .select("-password -studentPin")
+      .select("-password")
       .lean();
 
-    // Get all students
-    const students = await User.find({ role: "student" })
-      .select("-password -studentPin")
-      .lean();
+    const parentData = await Promise.all(
+      parents.map(async (parent) => {
+        const children = await User.find({ parentEmail: parent.email, role: "student" })
+          .select("-password -studentPin")
+          .lean();
 
-    // Attach students to parents using parentEmail
-    const parentData = parents.map(parent => {
-      const children = students.filter(
-        student => student.parentEmail === parent.email
-      );
+        // Check if any child needs help
+        const childrenWithStatus = await Promise.all(
+          children.map(async (child) => {
+            const results = await Result.find({ studentId: child._id });
+            const avg = results.length
+              ? results.reduce((acc, r) => acc + (r.score / r.total) * 100, 0) / results.length
+              : 100; // Assume good if no tests taken yet
+            return {
+              ...child,
+              needsHelp: avg < 50 && results.length > 0,
+            };
+          })
+        );
 
-      return {
-        ...parent,
-        children,
-      };
-    });
+        return { ...parent, children: childrenWithStatus };
+      })
+    );
 
     res.json({ parentData });
-
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

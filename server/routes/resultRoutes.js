@@ -8,13 +8,8 @@ router.get("/progress/:studentId", async (req, res) => {
   try {
     const results = await Result.find({
       studentId: req.params.studentId,
-    })
-      .populate("quizId", "topic title")
-      .lean();
+    }).populate("quizId", "topic");
 
-    //------------------------------------------------
-    // NO QUIZ CASE
-    //------------------------------------------------
     if (!results.length) {
       return res.json({
         totalQuizzes: 0,
@@ -26,78 +21,49 @@ router.get("/progress/:studentId", async (req, res) => {
       });
     }
 
-    //------------------------------------------------
-    // TOTAL QUIZZES
-    //------------------------------------------------
     const totalQuizzes = results.length;
 
-    //------------------------------------------------
-    // AVERAGE %
-    //------------------------------------------------
+    // Calculate Average Score
     const averageScore =
       results.reduce((acc, r) => {
         return acc + (r.score / r.total) * 100;
       }, 0) / totalQuizzes;
 
-    //------------------------------------------------
-    // PASS RATE
-    //------------------------------------------------
+    // Calculate Pass Rate
     const passed = results.filter(
       (r) => (r.score / r.total) * 100 >= 40
     ).length;
-
     const passRate = (passed / totalQuizzes) * 100;
 
-    //------------------------------------------------
-    // SUBJECT-WISE PERFORMANCE
-    //------------------------------------------------
-    const subjectTotals = {};
-    const subjectCounts = {};
-
-    const deriveSubject = (quiz) => {
-      const source = (quiz?.topic || quiz?.title || "").toLowerCase();
-      if (source.includes("math")) return "Math";
-      if (source.includes("science")) return "Science";
-      if (source.includes("english")) return "English";
-      if (source.includes("social")) return "Social Studies";
-      if (source.includes("evs")) return "EVS";
-      return "General";
-    };
-
+    // Calculate Subject Averages
+    const subjectStats = {};
     results.forEach((r) => {
-      const subject = deriveSubject(r.quizId);
-      const pct = (r.score / r.total) * 100;
-      subjectTotals[subject] = (subjectTotals[subject] || 0) + pct;
-      subjectCounts[subject] = (subjectCounts[subject] || 0) + 1;
+      const topic = r.quizId?.topic || "General";
+      if (!subjectStats[topic]) {
+        subjectStats[topic] = { totalScore: 0, count: 0 };
+      }
+      subjectStats[topic].totalScore += (r.score / r.total) * 100;
+      subjectStats[topic].count += 1;
     });
 
-    const subjectAverages = Object.fromEntries(
-      Object.keys(subjectTotals).map((s) => [
-        s,
-        Math.round(subjectTotals[s] / subjectCounts[s]),
-      ])
-    );
+    const subjectAverages = {};
+    const weakSubjects = [];
+    Object.entries(subjectStats).forEach(([topic, stats]) => {
+      const avg = Math.round(stats.totalScore / stats.count);
+      subjectAverages[topic] = avg;
+      if (avg < 50) {
+        weakSubjects.push(topic);
+      }
+    });
 
-    const weakSubjects = Object.entries(subjectAverages)
-      .filter(([, avg]) => avg < 40)
-      .map(([s]) => s);
-
-    //------------------------------------------------
     res.json({
       totalQuizzes,
       averageScore: Math.round(averageScore),
       passRate: Math.round(passRate),
-      history: results.map((r) => ({
-        _id: r._id,
-        score: r.score,
-        total: r.total,
-        createdAt: r.createdAt,
-        subject: deriveSubject(r.quizId),
-      })),
+      history: results,
       subjectAverages,
       weakSubjects,
     });
-
   } catch (err) {
     res.status(500).json({
       error: err.message,

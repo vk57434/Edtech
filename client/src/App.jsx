@@ -1079,11 +1079,140 @@ function KidDashboard({ session }) {
     },
   };
 
-  const lessons = baseLessons.map((lesson) => {
-    const overridesForClass = lessonOverridesByClass[classLevel] || {};
-    const overridesForTopic = overridesForClass[lesson.topic];
-    return overridesForTopic ? { ...lesson, ...overridesForTopic } : lesson;
-  });
+  const lessons = useMemo(() => {
+    if (classLevel === 2) {
+      return [
+        {
+          id: "addition-v",
+          title: "Math: Addition",
+          topic: "Addition",
+          icon: "➕",
+          headline: "Learn double-digit addition with fun examples!",
+          lessonTitle: "Adding Big Numbers",
+          videoUrl: "https://www.youtube.com/embed/6t3DMk4-9KU?start=0",
+        },
+        {
+          id: "subtraction-v",
+          title: "Math: Subtraction",
+          topic: "Subtraction",
+          icon: "➖",
+          headline: "Master double-digit subtraction step by step.",
+          lessonTitle: "Subtracting Big Numbers",
+          videoUrl: "https://www.youtube.com/embed/6t3DMk4-9KU?start=803",
+        },
+        {
+          id: "placevalue-v",
+          title: "Math: Place Value",
+          topic: "Place Value",
+          icon: "🔢",
+          headline: "Understand tens and ones in bigger numbers.",
+          lessonTitle: "Understanding Tens and Ones",
+          videoUrl: "https://www.youtube.com/embed/6t3DMk4-9KU?start=1377",
+        },
+        {
+          id: "multiplication-v",
+          title: "Math: Multiplication",
+          topic: "Multiplication",
+          icon: "✖️",
+          headline: "Discover multiplication as repeated addition!",
+          lessonTitle: "Intro to Multiplication",
+          videoUrl: "https://www.youtube.com/embed/6t3DMk4-9KU?start=1947",
+        },
+        {
+          id: "division-v",
+          title: "Math: Division",
+          topic: "Division",
+          icon: "➗",
+          headline: "Learn how to share equally using division.",
+          lessonTitle: "Sharing with Division",
+          videoUrl: "https://www.youtube.com/embed/6t3DMk4-9KU?start=2721",
+        },
+        {
+          id: "fractions-v",
+          title: "Math: Fractions",
+          topic: "Fractions",
+          icon: "🍕",
+          headline: "Explore halves, quarters, and parts of a whole.",
+          lessonTitle: "Introduction to Fractions",
+          videoUrl: "https://www.youtube.com/embed/6t3DMk4-9KU?start=3503",
+        },
+        {
+          id: "science-v-2",
+          title: "Science: Living Things",
+          topic: "Science",
+          icon: "🔬",
+          headline: "Understand how to tell if something is living or non-living.",
+          lessonTitle: "Living vs Non-Living",
+          videoUrl: "https://www.youtube.com/embed/QmQvdUaH7hE",
+        },
+      ];
+    }
+
+    if (classLevel === 3) {
+      return [
+        {
+          id: "multiplication-v-3",
+          title: "Math: Multiplication",
+          topic: "Multiplication",
+          icon: "✖️",
+          headline: "Learn multiplication as repeated addition in Hindi!",
+          lessonTitle: "Multiplication & Addition",
+          videoUrl: "https://www.youtube.com/embed/yEILEZsmZes",
+        },
+        {
+          id: "addition-v-3",
+          title: "Math: 4-Digit Addition",
+          topic: "Addition",
+          icon: "➕",
+          headline: "Master adding large 4-digit numbers step by step.",
+          lessonTitle: "4-Digit Addition",
+          videoUrl: "https://www.youtube.com/embed/owVaGxS_tqU",
+        },
+        {
+          id: "time-v-3",
+          title: "Math: Time & Clock",
+          topic: "Time",
+          icon: "⏰",
+          headline: "Learn to read the clock and tell time easily.",
+          lessonTitle: "Clock Reading",
+          videoUrl: "https://www.youtube.com/embed/yL6q6_XESA8",
+        },
+        {
+          id: "geometry-v-3",
+          title: "Math: Geometry",
+          topic: "Geometry",
+          icon: "📐",
+          headline: "Explore geometric shapes, lines, and patterns.",
+          lessonTitle: "Geometric Shapes",
+          videoUrl: "https://www.youtube.com/embed/Oac0YbfuByo",
+        },
+        {
+          id: "money-v-3",
+          title: "Math: Money",
+          topic: "Money",
+          icon: "💰",
+          headline: "Learn how to convert and count Indian currency.",
+          lessonTitle: "Money Conversion",
+          videoUrl: "https://www.youtube.com/embed/kRklXAbCFq0",
+        },
+        {
+          id: "patterns-v-3",
+          title: "Math: Patterns",
+          topic: "Patterns",
+          icon: "🎨",
+          headline: "Discover fun patterns in shapes and numbers.",
+          lessonTitle: "Patterns Fun",
+          videoUrl: "https://www.youtube.com/embed/oKCWDc152x4",
+        },
+      ];
+    }
+
+    return baseLessons.map((lesson) => {
+      const overridesForClass = lessonOverridesByClass[classLevel] || {};
+      const overridesForTopic = overridesForClass[lesson.topic];
+      return overridesForTopic ? { ...lesson, ...overridesForTopic } : lesson;
+    });
+  }, [classLevel]);
 
   useEffect(() => {
     const fetchProgress = async () => {
@@ -1157,6 +1286,9 @@ function KidDashboard({ session }) {
                   src={lesson.videoUrl}
                   title={lesson.lessonTitle}
                   allowFullScreen
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  loading="lazy"
                 />
               </div>
 
@@ -1167,7 +1299,7 @@ function KidDashboard({ session }) {
                 className="primary-btn"
                 onClick={() => startSubjectQuiz(lesson.topic)}
               >
-                Start {lesson.topic} Quiz
+                🎬 Watch Lesson
               </button>
             </article>
           ))}
