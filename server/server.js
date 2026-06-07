@@ -16,8 +16,24 @@ dotenv.config();
 
 const app = express();
 
+const CLIENT_URL = process.env.CLIENT_URL || "https://edtech-1mw5.vercel.app";
+const allowedOrigins = [CLIENT_URL, "http://localhost:5173", "http://localhost:3000"];
+
 // Middlewares
-app.use(cors());
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
+app.options("*", cors());
 app.use(express.json());
 
 // Connect MongoDB
