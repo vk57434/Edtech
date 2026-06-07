@@ -42,6 +42,9 @@ app.use(
 app.options("*", cors());
 app.use(express.json());
 
+app.get("/", (req, res) => res.send("Backend running"));
+app.get("/health", (req, res) => res.json({ status: "ok" }));
+
 // Connect MongoDB
 connectDB();
 
