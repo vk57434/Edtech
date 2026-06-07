@@ -16,8 +16,14 @@ dotenv.config();
 
 const app = express();
 
-const CLIENT_URL = process.env.CLIENT_URL || "https://edtech-1mw5.vercel.app";
-const allowedOrigins = [CLIENT_URL, "http://localhost:5173", "http://localhost:3000"];
+const CLIENT_URL = process.env.CLIENT_URL || "https://edtech-coral.vercel.app";
+const allowedOrigins = [
+  CLIENT_URL,
+  "https://edtech-1mw5.vercel.app",
+  "https://edtech-coral.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
 
 // Middlewares
 app.use(
