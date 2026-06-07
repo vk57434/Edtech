@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { API_URL } from "../config";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ export default function Login() {
   const login = async () => {
   try {
     const res = await axios.post(
-      "http://localhost:5000/api/auth/login",
+      `${API_URL}/auth/login`,
       form
     );
 

@@ -9,8 +9,7 @@ import {
   Tooltip,
   CartesianGrid,
 } from "recharts";
-
-const API_URL = "http://localhost:5000/api";
+import { API_URL } from "../config";
 const SUBJECTS_BY_CLASS = {
   1: ["Math", "English", "EVS"],
   2: ["Math", "English", "EVS"],
@@ -78,7 +77,7 @@ export default function ParentDashboard({ session, onSessionUpdate }) {
     const fetchStudentData = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/results/progress/${selectedStudent}`
+          `${API_URL}/results/progress/${selectedStudent}`
         );
         setProgress(res.data);
       } catch {
@@ -87,7 +86,7 @@ export default function ParentDashboard({ session, onSessionUpdate }) {
 
       try {
         const subRes = await axios.get(
-          `http://localhost:5000/api/students/${selectedStudent}/subjects`
+          `${API_URL}/students/${selectedStudent}/subjects`
         );
         setSubjects(subRes.data.subjects || null);
       } catch {

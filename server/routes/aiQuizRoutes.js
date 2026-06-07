@@ -136,6 +136,7 @@ FORMAT:
       lessonDescription: quizData.lessonDescription || lessonDescription || `Learn about ${topic}`,
       videoUrl: quizData.videoUrl || videoUrl,
       questions: questionsWithImages,
+      adminCreated: true,
     });
 
     console.log(`✅ AI Quiz saved successfully: ${quiz._id}`);

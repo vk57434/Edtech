@@ -23,6 +23,10 @@ const quizSchema = new mongoose.Schema({
       correctIndex: Number,
     },
   ],
+  adminCreated: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = mongoose.model("Quiz", quizSchema);

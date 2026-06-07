@@ -8,6 +8,7 @@ const seedCourses = require("./utils/seedCourses");
 const seedClassOneLessons = require("./utils/seedClassOneLessons");
 const seedClassTwoLessons = require("./utils/seedClassTwoLessons");
 const seedClassThreeLessons = require("./utils/seedClassThreeLessons");
+const seedClassFiveLessons = require("./utils/seedClassFiveLessons");
 
 
 // Load environment variables
@@ -73,6 +74,7 @@ seedCourses();
 seedClassOneLessons();
 seedClassTwoLessons();
 seedClassThreeLessons();
+seedClassFiveLessons();
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/courses", require("./routes/courseRoutes"));

@@ -13,11 +13,11 @@ import {
 import ParentDashboardPage from "./pages/ParentDashboard.jsx";
 import AdminDashboardPage from "./pages/AdminDashboard.jsx";
 import AdminGenerateQuizPage from "./pages/AdminGenerateQuiz.jsx";
+import AdminQuizCreate from "./pages/AdminQuizCreate.jsx";
 import QuizPage from "./pages/Quiz.jsx";
 import ResultPage from "./pages/Result.jsx";
 import "./App.css";
-
-const API_URL = "http://localhost:5000/api";
+import { API_URL } from "./config";
 const SESSION_KEY = "edtech-for-kids-session";
 
 const learners = [
@@ -258,6 +258,14 @@ function AppFrame() {
           element={
             <ProtectedRoute session={session} allowedRoles={["admin"]}>
               <AdminGenerateQuizPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin-quiz"
+          element={
+            <ProtectedRoute session={session} allowedRoles={["admin"]}>
+              <AdminQuizCreate />
             </ProtectedRoute>
           }
         />
@@ -1217,6 +1225,47 @@ function KidDashboard({ session }) {
           headline: "Discover fun patterns in shapes and numbers.",
           lessonTitle: "Patterns Fun",
           videoUrl: "https://www.youtube.com/embed/oKCWDc152x4",
+        },
+      ];
+    }
+
+    if (classLevel === 5) {
+      return [
+        {
+          id: "fractions-v-5",
+          title: "Math: Fractions",
+          topic: "Fractions",
+          icon: "🍕",
+          headline: "Learn about fractions, numerators, denominators, and how to compare fractions.",
+          lessonTitle: "Understanding Fractions",
+          videoUrl: "https://www.youtube.com/embed/DKanWcCq1B4",
+        },
+        {
+          id: "divisibility-v-5",
+          title: "Math: Divisibility Rules",
+          topic: "Divisibility Rules",
+          icon: "🔢",
+          headline: "Learn quick checks for divisibility by 2, 3, 5, 9, and 10.",
+          lessonTitle: "Divisibility Rules",
+          videoUrl: "https://www.youtube.com/embed/0DMBjvUdtMo",
+        },
+        {
+          id: "decimals-v-5",
+          title: "Math: Decimals",
+          topic: "Decimals",
+          icon: "➗",
+          headline: "Learn about decimal places, reading decimals, and decimal operations.",
+          lessonTitle: "Understanding Decimals",
+          videoUrl: "https://www.youtube.com/embed/DKanWcCq1B4",
+        },
+        {
+          id: "multiplication-v-5",
+          title: "Math: Multiplication",
+          topic: "Multiplication",
+          icon: "✖️",
+          headline: "Learn strategies for multiplying larger numbers efficiently.",
+          lessonTitle: "Multi-Digit Multiplication",
+          videoUrl: "https://www.youtube.com/embed/DKanWcCq1B4",
         },
       ];
     }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { API_URL } from "../config";
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -33,7 +34,7 @@ export default function Register() {
         payload.parentEmail = form.parentEmail;
       }
 
-      await axios.post("http://localhost:5000/api/auth/register", payload);
+      await axios.post(`${API_URL}/auth/register`, payload);
       alert("✅ Registered Successfully");
     } catch (err) {
       alert(err.response?.data?.message || "❌ Registration Failed");

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../config";
 
 export default function AdminGenerateQuiz() {
   const [topic, setTopic] = useState("");
@@ -21,7 +22,7 @@ export default function AdminGenerateQuiz() {
     try {
       setLoading(true);
 
-      await axios.post("http://localhost:5000/api/ai/generate", {
+      await axios.post(`${API_URL}/ai/generate`, {
         topic,
         subject,
         classLevel: Number(classLevel),

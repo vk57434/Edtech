@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../config";
 
 export default function AdminDashboard() {
   const [parents, setParents] = useState([]);
@@ -10,7 +11,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/admin/users")
+      .get(`${API_URL}/admin/users`)
       .then((res) => setParents(res.data.parentData || []))
       .catch(() => setParents([]))
       .finally(() => setLoading(false));
@@ -44,13 +45,20 @@ export default function AdminDashboard() {
             </p>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-wrap">
             <button
               type="button"
               onClick={() => navigate("/admin-ai")}
               className="rounded-full bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-100 transition hover:bg-indigo-700 active:scale-95"
             >
               🤖 Generate Quiz
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate("/admin-quiz")}
+              className="rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-slate-300 transition hover:bg-slate-800 active:scale-95"
+            >
+              ✍️ Create Quiz
             </button>
             <button
               type="button"
@@ -177,7 +185,7 @@ function StudentRow({ student }) {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/api/results/progress/${student._id}`)
+      .get(`${API_URL}/results/progress/${student._id}`)
       .then((res) => setProgress(res.data))
       .catch(() =>
         setProgress({

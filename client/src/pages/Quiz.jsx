@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, useNavigate } from "react-router-dom";
+import { API_URL } from "../config";
 // import QuizCard from "../components/QuizCard";
 
 const MOTION_USED = motion;
@@ -62,7 +63,7 @@ export default function Quiz() {
         const query = selectedTopic
           ? `?topic=${encodeURIComponent(selectedTopic)}`
           : "";
-        const url = `http://localhost:5000/api/quiz/random/${student.class}${query}`;
+        const url = `${API_URL}/quiz/random/${student.class}${query}`;
         console.log(`📡 Fetching quiz from: ${url}`);
 
         const res = await axios.get(url);
@@ -210,7 +211,7 @@ export default function Quiz() {
         typeof finalScoreOverride === "number" ? finalScoreOverride : score;
 
       try {
-        await axios.post("http://localhost:5000/api/quiz/submit", {
+        await axios.post(`${API_URL}/quiz/submit`, {
           studentId: student._id,
           quizId: quiz._id,
           class: student.class,

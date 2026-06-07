@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../config";
 
 export default function Courses() {
 
@@ -9,7 +10,7 @@ export default function Courses() {
 
   useEffect(() => {
 
-    axios.get("http://localhost:5000/api/courses")
+    axios.get(`${API_URL}/courses`)
       .then(res => setCourses(res.data));
 
   }, []);
