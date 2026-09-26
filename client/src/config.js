@@ -1,5 +1,9 @@
-const defaultUrl = import.meta.env.DEV
-  ? "http://localhost:5000/api"
-  : "https://edtech-54bf.onrender.com/api";
+const defaultBaseUrl = import.meta.env.DEV
+  ? "http://localhost:5000"
+  : "https://edtech-1-qzwo.onrender.com";
 
-export const API_URL = import.meta.env.VITE_API_URL || defaultUrl;
+const baseUrl = (import.meta.env.VITE_API_URL || defaultBaseUrl)
+  .replace(/\/+$/, "")
+  .replace(/\/api$/i, "");
+
+export const API_URL = `${baseUrl}/api`;
