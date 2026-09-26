@@ -46,8 +46,6 @@ app.get("/", (req, res) => res.send("Backend running"));
 app.get("/health", (req, res) => res.json({ status: "ok" }));
 
 // Connect MongoDB
-connectDB();
-
 const DEFAULT_ADMINS = [
   {
     name: "Admin VK",
@@ -91,15 +89,7 @@ const createDefaultAdmins = async () => {
   }
 };
 
-// Call admin creation
-createDefaultAdmins();
-
 // Routes
-seedCourses();
-seedClassOneLessons();
-seedClassTwoLessons();
-seedClassThreeLessons();
-seedClassFiveLessons();
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/courses", require("./routes/courseRoutes"));
@@ -108,9 +98,25 @@ app.use("/api/ai", require("./routes/aiQuizRoutes"));
 app.use("/api/results", require("./routes/resultRoutes"));
 app.use("/api/students", require("./routes/studentRoutes"));
 
-// Port from .env
-const PORT = process.env.PORT || 5000;
+const startServer = async () => {
+  await connectDB();
 
-app.listen(PORT, () => {
-  console.log(`🚀 Backend running on port ${PORT}`);
+  if (process.env.NODE_ENV !== "production") {
+    await createDefaultAdmins();
+    await seedCourses();
+    await seedClassOneLessons();
+    await seedClassTwoLessons();
+    await seedClassThreeLessons();
+    await seedClassFiveLessons();
+  }
+
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`🚀 Backend running on port ${PORT}`);
+  });
+};
+
+startServer().catch((error) => {
+  console.error("❌ Backend startup failed:", error.name);
+  process.exit(1);
 });
